@@ -24,6 +24,14 @@ Route::group(['prefix' => 'ws'], function()
 	Route::resource('montosprestamo',		'MontosPrestamoController');
 	Route::resource('clientes',				'ClientesController');
 	Route::resource('referenciasclientes',	'ReferenciasPersonalesClientesController');
+	Route::resource('creditos',				'CreditosController');
+	Route::resource('usuarios',				'UsuariosController');
+	Route::post('login',					'UsuariosController@login');
+	Route::get('logout',function()
+		{
+			Auth::logout();
+			return \Redirect::to('/');
+		});
 });
 
 Route::group(['prefix' => 'layouts'], function()

@@ -18,7 +18,7 @@ class CreditosController extends Controller
     public function index()
     {
         try {
-            $registros = Creditos::all()
+            $registros = Creditos::all();
 
             if( $registros ) 
             {
@@ -32,7 +32,7 @@ class CreditosController extends Controller
                 
             
         } catch (\Exception $e) {
-            $this->statusCode   = 200
+            $this->statusCode   = 200;
             $this->result       = false;  
             $this->message      = env('APP_DEBUG') ? $e->getMessage() : "Ocurrió un problema al consultar los registros"; 
         }
@@ -60,9 +60,9 @@ class CreditosController extends Controller
                                 $nuevoRegistro = Creditos::create([
                                                     'clientes_id'           => $request->input('idcliente'),
                                                     'planes_id'             => $request->input('idplan'),
-                                                    'montos_prestamos_id'   => $request->input('monto'),
-                                                    'usuario_creo'          => $request->input('idusuario'),
-                                                    'usuario_cobrador'      => $request->input('idusuario'),
+                                                    'montos_prestamo_id'   => $request->input('monto'),
+                                                    'usuarios_creo'          => $request->input('idusuario'),
+                                                    'usuarios_cobrador'      => $request->input('idusuario'),
                                                     'saldo'                 => $request->input('monto'),
                                                     'interes'               => 0,
                                                     'cuota_diaria'          => $request->input('cuota_diaria'),
