@@ -13,18 +13,18 @@ class Usuarios extends Model implements AuthenticatableContract, CanResetPasswor
 	use Authenticatable, CanResetPassword;
 
     protected $table = 'usuarios';
-	protected $fillable = ['tipo_usuarios_id','nombre','user','password','password_2','remember_token','estado','sucursales_id'];
+	protected $fillable = ['tipo_usuarios_id','nombre','user','password','password_2','estado','sucursales_id'];
 
 	protected $hidden = ['password', 'password_2','remember_token'];
 
 	public function tipoUsuarios()
 	{
-		return $this->hasMany('App\TipoUsuarios', 'id', 'tipo_usuarios_id');
+		return $this->hasOne('App\TipoUsuarios', 'id', 'tipo_usuarios_id');
 	}
 
 	public function sucursal()
 	{
-		return $this->hasMany('App\Sucursales', 'id', 'sucursales_id');
+		return $this->hasOne('App\Sucursales', 'id', 'sucursales_id');
 	}
 
 	public function cobradorClientes()

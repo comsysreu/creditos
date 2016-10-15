@@ -11,6 +11,9 @@ use Auth;
 use DB;
 use Session;
 
+//revisar el usuario que no sea repedito
+//validar el password que vaya vacio
+
 class UsuariosController extends Controller
 {
     public $statusCode  = 200;
@@ -58,25 +61,32 @@ class UsuariosController extends Controller
     public function store(Request $request)
     {
         try {
-            $nuevoRegistro = \DB::transaction( function() use ( $request){
-                                $nuevoRegistro = Usuarios::create([
-                                                    'tipo_usuarios_id'  => $request->input('idtipousuario'),
-                                                    'nombre'            => $request->input('nombre'),
-                                                    'user'              => $request->input('user'),
-                                                    'estado'            => 1,
-                                                    'sucursales_id'     => $request->input('idsucursal'),
-                                                    'password'          => \Hash::make($request->input('password')),
-                                                    'password_2'        => \Hash::make($request->input('password2')),
-                                                    'remember_token'    => $request->input('remember_token'),
 
-                                                ]);
+            $registro = Usuarios::where('user',strtolower($request->input('user')))->get();
 
-                                if( !$nuevoRegistro )
-                                    throw new \Exception("No se pudo crear el registro");
-                                else
-                                    return $nuevoRegistro;
-                            });
+            if(count($registro) == 0)
+            {
+                $nuevoRegistro = \DB::transaction( function() use ( $request){
+                                    $nuevoRegistro = Usuarios::create([
+                                                        'tipo_usuarios_id'  => $request->input('idtipousuario'),
+                                                        'nombre'            => $request->input('nombre'),
+                                                        'user'              => strtolower($request->input('user')),
+                                                        'estado'            => 1,
+                                                        'sucursales_id'     => $request->input('idsucursal'),
+                                                        'password'          => \Hash::make($request->input('password')),
+                                                        'password_2'        => \Hash::make($request->input('password2')),
 
+                                                    ]);
+
+                                    if( !$nuevoRegistro )
+                                        throw new \Exception("No se pudo crear el registro");
+                                    else
+                                        return $nuevoRegistro;
+                                });
+            }
+            else
+                throw new \Exception("Usuario ingresado ya existe, favor verifica");
+                  
             $this->statusCode   = 200;
             $this->result       = true;
             $this->message      = "Registro creado exitosamente";
@@ -135,20 +145,28 @@ class UsuariosController extends Controller
     {
         //
     }
-
     
     public function update(Request $request, $id)
     {
         try {
-            \DB::beginTransaction();
-            $registro = Usuarios::find( $id );
-            $registro->tipo_usuarios_id = $request->input('idtipousuario', $registro->tipo_usuarios_id);
-            $registro->user             = $request->input('user', $registro->user);
-            $registro->estado           = $request->input('estado', $registro->estado);
-            $registro->sucursales_id    = $request->input('idsucursal', $registro->sucursales_id);
-            $registro->password         = $request->input('password', $registro->password);
-            $registro->password_2       = $request->input('password2', $registro->password_2);
-            $registro->save();
+
+            $registroUsuario = Usuarios::where('user',strtolower($request->input('user')))->get();
+
+            if( count($registroUsuario) == 0 )
+                \DB::beginTransaction();
+                $registro = Usuarios::find( $id );
+                $registro->tipo_usuarios_id = $request->input('idtipousuario', $registro->tipo_usuarios_id);
+                $registro->user             = strtolower($request->input('user', $registro->user));
+                $registro->estado           = $request->input('estado', $registro->estado);
+                $registro->sucursales_id    = $request->input('idsucursal', $registro->sucursales_id);
+
+                if($request->input("password")!="")
+                    $registro->password       = \Hash::make($request->input('password'));
+                if($request->input("password2")!="")   
+                    $registro->password_2     = \Hash::make($request->input('password2')); 
+
+                $registro->password_2       = $request->input('password2', $registro->password_2);
+                $registro->save();
 
             \DB::commit();
             $this->statusCode   = 200;
