@@ -13,4 +13,9 @@ class Clientes extends Model
 	{
 		return $this->hasMany('App\Creditos', 'clientes_id', 'id')->with('planes','montos','usuariocreador','usuariocobrador');
 	}
+
+	public function referenciasPersonales()
+	{
+		return $this->hasMany('App\ReferenciasPersonalesClientes','clientes_id','id');
+	}
 }

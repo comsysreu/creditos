@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Creditos;
+use App\CreditosDetalle;
+use Session;
 
 class CreditosController extends Controller
 {
@@ -18,7 +20,7 @@ class CreditosController extends Controller
     public function index()
     {
         try {
-            $registros = Creditos::all();
+            $registros = Creditos::with('cliente','planes','montos','usuariocobrador')->get();
 
             if( $registros ) 
             {
@@ -56,23 +58,34 @@ class CreditosController extends Controller
     public function store(Request $request)
     {
         try {
+
             $nuevoRegistro = \DB::transaction( function() use ($request){
                                 $nuevoRegistro = Creditos::create([
                                                     'clientes_id'           => $request->input('idcliente'),
                                                     'planes_id'             => $request->input('idplan'),
-                                                    'montos_prestamo_id'   => $request->input('monto'),
-                                                    'usuarios_creo'          => $request->input('idusuario'),
-                                                    'usuarios_cobrador'      => $request->input('idusuario'),
-                                                    'saldo'                 => $request->input('monto'),
+                                                    'montos_prestamo_id'    => $request->input('idmonto'),
+                                                    'usuarios_creo'         => $request->session()->get('idUsuario'),
+                                                    'usuarios_cobrador'     => $request->input('idusuario'),
+                                                    'saldo'                 => $request->input('deudatotal'),
                                                     'interes'               => 0,
+                                                    'deudatotal'            => $request->input('deudatotal'),
                                                     'cuota_diaria'          => $request->input('cuota_diaria'),
                                                     'cuota_minima'          => $request->input('cuota_minima'),
+                                                    'fecha_inicio'          => \Carbon\Carbon::parse($request->input('fecha_inicio'))->format('Y-m-d'),
+                                                    'fecha_limite'          => \Carbon\Carbon::parse($request->input('fecha_limite'))->format('Y-m-d'),
                                                     'estado'                => 1,
                                                 ]);
 
                                 if( !$nuevoRegistro )
                                     throw new \Exception("Error al crear el registro");
                                 else
+                                    $detalleCredito = new CreditosDetalle;
+                                    $detalleCredito->creditos_id    = $nuevoRegistro->id;
+                                    $detalleCredito->fecha_pago     = \Carbon\Carbon::parse($request->input('fecha_inicio'))->format('Y-m-d');
+                                    $detalleCredito->abono          = $request->input('cuota_diaria');
+                                    $detalleCredito->estado         = 1;
+                                    $detalleCredito->save();
+
                                     return $nuevoRegistro;
                             });
 
@@ -103,7 +116,7 @@ class CreditosController extends Controller
     public function show($id)
     {
         try {
-            $registro = Creditos::find( $id );
+            $registro = Creditos::with('cliente','planes','montos','usuariocobrador')->find( $id );
 
             if ( $registro ) {
                 $this->statusCode   = 200;
@@ -145,4 +158,18 @@ class CreditosController extends Controller
     {
         //
     }
+
+    public function registrarAbono(Request $request)
+    {
+        try {
+            
+        } catch (\Exception $e) {
+            
+        }
+        finally
+        {
+
+        }
+    }
+
 }
