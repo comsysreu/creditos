@@ -167,5 +167,44 @@
 				}]
 			}
 		});
+
+		$routeProvider.when("/sucursales", {
+			templateUrl: "views/sucursales/sucursales.html",
+			controller: "SucursalesController",
+			resolve: {
+				deps: ["$ocLazyLoad", function(a) {
+					return a.load({
+						name: "app.sucursales",
+						files: ["scripts/controllers/SucursalesController.js"]
+					})
+				}]
+			}
+		});
+
+		$routeProvider.when("/planes", {
+			templateUrl: "views/planes/planes.html",
+			controller: "PlanesController",
+			resolve: {
+				deps: ["$ocLazyLoad", function(a) {
+					return a.load({
+						name: "app.planes",
+						files: ["scripts/controllers/PlanesController.js"]
+					})
+				}]
+			}
+		});
+
+		$routeProvider.when("/montos", {
+			templateUrl: "views/montos/montos.html",
+			controller: "MontosController",
+			resolve: {
+				deps: ["$ocLazyLoad", function(a) {
+					return a.load({
+						name: "app.montos",
+						files: ["scripts/controllers/MontosController.js"]
+					})
+				}]
+			}
+		});
 	}])
 }())

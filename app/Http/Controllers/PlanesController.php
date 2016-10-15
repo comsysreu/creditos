@@ -18,7 +18,7 @@ class PlanesController extends Controller
     public function index()
     {
         try {
-            $registros = Planes::all();
+            $registros = Planes::with('sucursal')->get();
 
             if ($registros)
             {
