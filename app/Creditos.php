@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Creditos extends Model
 {
     protected $table = 'creditos';
-	protected $fillable = ['clientes_id','planes_id','montos_prestamo_id','usuarios_creo','usuarios_cobrador','saldo','interes','cuota_diaria','cuota_minima','estado'];
+	protected $fillable = ['clientes_id','planes_id','montos_prestamo_id','usuarios_creo','usuarios_cobrador','saldo','interes','deudatotal','cuota_diaria','cuota_minima','fecha_inicio','fecha_fin','estado'];
 
 	public function planes()
 	{
@@ -27,5 +27,9 @@ class Creditos extends Model
 	public function usuariocobrador()
 	{
 		return $this->hasMany('App\Usuarios', 'id', 'usuarios_cobrador');
+	}
+	public function cliente()
+	{
+		return $this->hasOne('App\Clientes','id','clientes_id');
 	}
 }

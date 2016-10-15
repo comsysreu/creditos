@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Usuarios;
 use Auth;
 use DB;
+use Session;
 
 class UsuariosController extends Controller
 {
@@ -20,7 +21,7 @@ class UsuariosController extends Controller
     public function index()
     {
         try {
-            $registros = Usuarios::all();
+            $registros = Usuarios::with('tipoUsuarios','sucursal')->get();
 
             if( $registros ){
                 $this->statusCode   = 200;
@@ -101,7 +102,7 @@ class UsuariosController extends Controller
     public function show($id)
     {
         try {
-            $registro = Usuarios::find( $id );
+            $registro = Usuarios::with('tipoUsuarios','sucursal')->find( $id );
 
             if( $registro ){
                 $this->statusCode   = 200;
@@ -147,7 +148,6 @@ class UsuariosController extends Controller
             $registro->sucursales_id    = $request->input('idsucursal', $registro->sucursales_id);
             $registro->password         = $request->input('password', $registro->password);
             $registro->password_2       = $request->input('password2', $registro->password_2);
-            $registro->remember_token   = $request->input('remember_token', $registro->remember_token);
             $registro->save();
 
             \DB::commit();
@@ -209,6 +209,10 @@ class UsuariosController extends Controller
         {
             if (Auth::attempt(['user'=> $request->input('user'),'password'=> $request->input('password')]))
             {
+                //Session::put('idUsuario', Auth::user()->id);
+
+                $request->session()->put('idUsuario', Auth::user()->id);
+
                 $this->records      =   [Auth::user()];
                 $this->message      =   "Sesión iniciada";
                 $this->result       =   true;
@@ -235,6 +239,64 @@ class UsuariosController extends Controller
                 'records'   =>  $this->records
             ];
             
+            return response()->json($response, $this->statusCode);
+        }
+    }
+
+    public function cobradorClientes(Request $request){
+        try {
+            $registros = Usuarios::where('tipo_usuarios_id',4)->with('cobradorClientes')->get();
+
+            if( $registros ){
+                $this->statusCode   = 200;
+                $this->result       = true;
+                $this->message      = "Registros consultados exitosamente";
+                $this->records      = $registros;
+            }
+            else
+                throw new \Exception("No se encontraron registros");
+                
+        } catch (\Exception $e) {
+            $this->statusCode   = 200;
+            $this->result       = false;
+            $this->message      = env('APP_DEBUG') ? $e->getMessage() : "Ocurrió un problema al consultar los registros";
+        }
+        finally{
+            $response = [
+                'result'    => $this->result,
+                'message'   => $this->message,
+                'records'   => $this->records,
+            ];
+
+            return response()->json($response, $this->statusCode);
+        }
+    }
+
+    public function listaCobradores(Request $request){
+        try {
+            $registros = Usuarios::where('tipo_usuarios_id',4)->where('estado', 1)->get();
+
+            if( $registros ){
+                $this->statusCode   = 200;
+                $this->result       = true;
+                $this->message      = "Registros consultados exitosamente";
+                $this->records      = $registros;
+            }
+            else
+                throw new \Exception("No se encontraron registros");
+                
+        } catch (\Exception $e) {
+            $this->statusCode   = 200;
+            $this->result       = false;
+            $this->message      = env('APP_DEBUG') ? $e->getMessage() : "Ocurrió un problema al consultar los registros";
+        }
+        finally{
+            $response = [
+                'result'    => $this->result,
+                'message'   => $this->message,
+                'records'   => $this->records,
+            ];
+
             return response()->json($response, $this->statusCode);
         }
     }

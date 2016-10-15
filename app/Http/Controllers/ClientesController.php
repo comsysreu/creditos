@@ -18,7 +18,7 @@ class ClientesController extends Controller
     public function index()
     {
         try {
-            $registros = Clientes::with('creditos')->get();
+            $registros = Clientes::with('referenciasPersonales','creditos')->get();
 
             if( $registros ){
                 $this->statusCode   = 200;

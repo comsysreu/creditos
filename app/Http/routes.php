@@ -25,9 +25,13 @@ Route::group(['prefix' => 'ws'], function() {
 	Route::resource('creditos',				'CreditosController');
 	Route::resource('usuarios',				'UsuariosController');
 	Route::post('login',					'UsuariosController@login');
+
 	Route::get('logout',function() {
 		Auth::logout();
 		return \Redirect::to('/');
 	});
+
+	Route::get('cobradores',				'UsuariosController@cobradorClientes');
+	Route::get('listacobradores',			'UsuariosController@listacobradores');
 });
 
