@@ -31,9 +31,9 @@ Route::group(['prefix' => 'ws'], function() {
 		return \Redirect::to('/');
 	});
 
-
 	Route::get('cobradores',				'UsuariosController@cobradorClientes');
 	Route::get('listacobradores',			'UsuariosController@listacobradores');
+	Route::post('registrarabonos',			'CreditosController@registrarAbono');
 
 });
 

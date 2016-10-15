@@ -11,25 +11,29 @@ class Creditos extends Model
 
 	public function planes()
 	{
-		return $this->hasMany('App\Planes', 'id', 'planes_id');
+		return $this->hasOne('App\Planes', 'id', 'planes_id');
 	}
 
 	public function montos()
 	{
-		return $this->hasMany('App\MontosPrestamo', 'id', 'montos_prestamo_id');
+		return $this->hasOne('App\MontosPrestamo', 'id', 'montos_prestamo_id');
 	}
 
 	public function usuariocreador()
 	{
-		return $this->hasMany('App\Usuarios', 'id', 'usuarios_creo');
+		return $this->hasOne('App\Usuarios', 'id', 'usuarios_creo');
 	}
 
 	public function usuariocobrador()
 	{
-		return $this->hasMany('App\Usuarios', 'id', 'usuarios_cobrador');
+		return $this->hasOne('App\Usuarios', 'id', 'usuarios_cobrador');
 	}
 	public function cliente()
 	{
 		return $this->hasOne('App\Clientes','id','clientes_id');
+	}
+	public function detalleCreditos()
+	{
+		return $this->hasMany('App\CreditosDetalle','creditos_id','id');
 	}
 }
