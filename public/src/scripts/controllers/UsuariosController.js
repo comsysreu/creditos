@@ -4,8 +4,7 @@
 
 	angular.module("app.usuarios", [])
 
-	.controller("UsuariosController", ["$scope", "$filter", "$http", "$modal", "$interval", function($scope, $filter, $http, $modal, $timeout) 
-	{	
+	.controller("UsuariosController", ["$scope", "$filter", "$http", "$modal", "$interval", function($scope, $filter, $http, $modal, $timeout)  {	
 		// Variables de DataTable
 		$scope.datas = [];
 		$scope.currentPageStores = [];
@@ -28,54 +27,46 @@
 				method: 'GET',
 			  	url: 	'../ws/usuarios'
 			})
-			.then(function successCallback(response) 
-			{
+			.then(function successCallback(response)  {
 			    $scope.datas = response.data.records;
 				$scope.search();
 				$scope.select($scope.currentPage);
 			}, 
-			function errorCallback(response) 
-			{			
+			function errorCallback(response)  {			
 			   console.log( response.data.message );
 			});
 		}
 
 		// FUNCIONES DE DATATABLE
-		$scope.select = function(page) 
-		{
+		$scope.select = function(page) {
 			var start = (page - 1)*$scope.numPerPage,
 				end = start + $scope.numPerPage;
 
 			$scope.currentPageStores = $scope.filteredData.slice(start, end);
 		}
 
-		$scope.onFilterChange = function() 
-		{
+		$scope.onFilterChange = function() {
 			$scope.select(1);
 			$scope.currentPage = 1;
 			$scope.row = '';
 		}
 
-		$scope.onNumPerPageChange = function() 
-		{
+		$scope.onNumPerPageChange = function() {
 			$scope.select(1);
 			$scope.currentPage = 1;
 		}
 
-		$scope.onOrderChange = function() 
-		{
+		$scope.onOrderChange = function() {
 			$scope.select(1);
 			$scope.currentPage = 1;
 		}
 
-		$scope.search = function() 
-		{
+		$scope.search = function() {
 			$scope.filteredData = $filter("filter")($scope.datas, $scope.searchKeywords);
 			$scope.onFilterChange();		
 		}
 
-		$scope.order = function(rowName) 
-		{
+		$scope.order = function(rowName) {
 			if($scope.row == rowName)
 				return;
 			$scope.row = rowName;
@@ -86,27 +77,21 @@
 		$scope.LlenarTabla();
 
 		// Función para Toast
-		$scope.createToast = function(tipo, mensaje) 
-		{
-			$scope.toasts.push(
-			{
+		$scope.createToast = function(tipo, mensaje) {
+			$scope.toasts.push({
 				anim: "bouncyflip",
 				type: tipo,
 				msg: mensaje
 			});
 		}
 
-		$scope.closeAlert = function(index) 
-		{
+		$scope.closeAlert = function(index) {
 			$scope.toasts.splice(index, 1);
 		}
 
-		$scope.saveData = function( item )
-		{
-			if(  $scope.accion == 'crear' )
-			{
-				$http(
-				{
+		$scope.saveData = function( item ) {
+			if(  $scope.accion == 'crear' ){
+				$http({
 					method: 'POST',
 				  	url: 	'../ws/usuarios',
 				  	data: 	{ 
@@ -116,30 +101,36 @@
 				  		usuario_tipo_id: item.usuario_tipo_id
 				  	}
 				})
-				.then(function successCallback(response) 
-				{
-				    $scope.LlenarTabla();
-				    modal.close();
-				    $scope.createToast("success", "<strong>Éxito: </strong>"+response.data.message);
-				    $timeout( function(){ $scope.closeAlert(0); }, 3000);
+				.then(function successCallback(response) {
+					if( response.data.result ) {
+					    $scope.LlenarTabla();
+					    modal.close();
+					    $scope.createToast("success", "<strong>Éxito: </strong>"+response.data.message);
+					    $timeout( function(){ $scope.closeAlert(0); }, 3000);
+					}
+					else {
+						$scope.createToast("danger", "<strong>Error: </strong>"+response.data.message);
+					    $timeout( function(){ $scope.closeAlert(0); }, 5000);	
+					}
 				}, 
-				function errorCallback(response) 
-				{
+				function errorCallback(response) {
 				   console.log( response.data.message );
 				});
 			}
 		}
 
 		// Funciones para Modales
-		$scope.modalCreateOpen = function() 
-		{
+		$scope.modalCreateOpen = function() {
 			$scope.item = { usuario_tipo_id: 0 };
 			$scope.opciones = [];
 			$scope.accion = 'crear';
 
-			$http.get("../ws/tipos/usuarios", {}).then(function(response)
-			{
-				$scope.opciones = response.data.records;
+			$http.get("../ws/tipousuarios", {}).then(function(response) {
+				$scope.tipousuarios = response.data.records;
+			});
+
+			$http.get("../ws/sucursales", {}).then(function(response) {
+				$scope.sucursales = response.data.records;
 			});
 
 			modal = $modal.open({
@@ -151,12 +142,11 @@
 			});
 		}
 
-		$scope.modalEditOpen = function(data) 
-		{
+		$scope.modalEditOpen = function(data) {
 			$scope.opciones = [];
 			$scope.accion = 'editar';
 
-			$http.get("../ws/tipos/usuarios", {}).then(function(response)
+			$http.get("../ws/tipousuarios", {}).then(function(response)
 			{
 				$scope.opciones = response.data.records;
 			});

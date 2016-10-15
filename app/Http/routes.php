@@ -11,13 +11,11 @@
 |
 */
 
-Route::get('/', function ()
-{
-    return view('welcome');
+Route::get('/', function () {
+    return redirect('src');
 });
 
-Route::group(['prefix' => 'ws'], function()
-{
+Route::group(['prefix' => 'ws'], function() {
 	Route::resource('tipousuarios', 		'TipoUsuariosController');
 	Route::resource('sucursales', 			'SucursalesController');
 	Route::resource('planes', 				'PlanesController');
@@ -27,14 +25,9 @@ Route::group(['prefix' => 'ws'], function()
 	Route::resource('creditos',				'CreditosController');
 	Route::resource('usuarios',				'UsuariosController');
 	Route::post('login',					'UsuariosController@login');
-	Route::get('logout',function()
-		{
-			Auth::logout();
-			return \Redirect::to('/');
-		});
+	Route::get('logout',function() {
+		Auth::logout();
+		return \Redirect::to('/');
+	});
 });
 
-Route::group(['prefix' => 'layouts'], function()
-{
-	Route::get( 'welcome', function()			{	return view('welcome');	});
-});
