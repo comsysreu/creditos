@@ -33,5 +33,6 @@ Route::group(['prefix' => 'ws'], function() {
 
 	Route::get('cobradores',				'UsuariosController@cobradorClientes');
 	Route::get('listacobradores',			'UsuariosController@listacobradores');
+
 });
 
