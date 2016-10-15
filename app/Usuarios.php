@@ -19,12 +19,12 @@ class Usuarios extends Model implements AuthenticatableContract, CanResetPasswor
 
 	public function tipoUsuarios()
 	{
-		return $this->hasMany('App\TipoUsuarios', 'id', 'tipo_usuarios_id');
+		return $this->hasOne('App\TipoUsuarios', 'id', 'tipo_usuarios_id');
 	}
 
 	public function sucursal()
 	{
-		return $this->hasMany('App\Sucursales', 'id', 'sucursales_id');
+		return $this->hasOne('App\Sucursales', 'id', 'sucursales_id');
 	}
 
 	public function cobradorClientes()

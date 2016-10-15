@@ -66,9 +66,7 @@ class UsuariosController extends Controller
                                                     'estado'            => 1,
                                                     'sucursales_id'     => $request->input('idsucursal'),
                                                     'password'          => \Hash::make($request->input('password')),
-                                                    'password_2'        => \Hash::make($request->input('password2')),
-                                                    'remember_token'    => $request->input('remember_token'),
-
+                                                    'password_2'        => \Hash::make($request->input('password2'))
                                                 ]);
 
                                 if( !$nuevoRegistro )

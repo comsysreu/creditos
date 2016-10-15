@@ -27,7 +27,16 @@
 					<table class="table table-bordered table-striped">
 						<thead>
 							<tr>
-								<th>#</th>
+								<th>#
+									<div class="th">
+										<i class="fa fa-caret-up icon-up"
+											ng-click=" order('id') "
+                              				ng-class="{active: row == 'id'}"></i>
+										<i class="fa fa-caret-down icon-down"
+											ng-click=" order('-id') "
+                              				ng-class="{active: row == '-id'}"></i>
+									</div>
+								</th>
 								<th>
 									Nombre
 									<div class="th">
@@ -51,6 +60,28 @@
 									</div>
 								</th>
 								<th>
+									Tipo de usuario
+									<div class="th">
+										<i class="fa fa-caret-up icon-up"
+											ng-click=" order('tipo_usuarios.descripcion') "
+                              				ng-class="{active: row == 'tipo_usuarios.descripcion'}"></i>
+										<i class="fa fa-caret-down icon-down"
+											ng-click=" order('-tipo_usuarios.descripcion') "
+                              				ng-class="{active: row == '-tipo_usuarios.descripcion'}"></i>
+									</div>
+								</th>
+								<th>
+									Sucursal
+									<div class="th">
+										<i class="fa fa-caret-up icon-up"
+											ng-click=" order('sucursal.descripcion') "
+                              				ng-class="{active: row == 'sucursal.descripcion'}"></i>
+										<i class="fa fa-caret-down icon-down"
+											ng-click=" order('-sucursal.descripcion') "
+                              				ng-class="{active: row == '-sucursal.descripcion'}"></i>
+									</div>
+								</th>
+								<th>
 									Estado
 									<div class="th">
 										<i class="fa fa-caret-up icon-up"
@@ -69,6 +100,8 @@
 								<td>{{ data.id }}</td>
 								<td>{{ data.nombre }}</td>
 								<td>{{ data.user }}</td>
+								<td>{{ data.tipo_usuarios.descripcion }}</td>
+								<td>{{ data.sucursal.descripcion }}</td>
 								<td>
 									<label ng-if="data.estado == 1" class="label label-success mr5">Activo</label>
 									<label ng-if="data.estado == 0" class="label label-danger mr5">Inactivo</label>
@@ -76,7 +109,7 @@
 								<td>
 									<div class="btn-group">
 					                    <button type="button" class="btn btn-info ion ion-edit" ng-click="modalEditOpen(data)" md-ink-ripple></button>
-					                    <button type="button" class="btn btn-danger ion ion-trash-a" md-ink-ripple></button>
+					                    <button type="button" class="btn btn-danger ion ion-trash-a" ng-click="modalDeleteOpen(data)" md-ink-ripple></button>
 					                </div>
 								</td>
 							</tr>

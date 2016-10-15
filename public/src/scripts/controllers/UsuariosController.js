@@ -5,6 +5,11 @@
 	angular.module("app.usuarios", [])
 
 	.controller("UsuariosController", ["$scope", "$filter", "$http", "$modal", "$interval", function($scope, $filter, $http, $modal, $timeout)  {	
+		
+		//Variables generales
+		$scope.tipousuarios = [];
+		$scope.sucursales = [];
+
 		// Variables de DataTable
 		$scope.datas = [];
 		$scope.currentPageStores = [];
@@ -20,6 +25,20 @@
 		$scope.toasts = [];
 
 		var modal;
+
+		$scope.cargarTipoUsuarios = function() {
+			$http.get("../ws/tipousuarios", {}).then(function(response) {
+				if (response.data.result)
+					$scope.tipousuarios = response.data.records;
+			});
+		}
+
+		$scope.cargarSucursales = function() {
+			$http.get("../ws/sucursales", {}).then(function(response) {
+				if (response.data.result) 
+					$scope.sucursales = response.data.records;
+			});
+		}
 
 		$scope.LlenarTabla = function()
 		{
@@ -75,6 +94,8 @@
 		}	
 
 		$scope.LlenarTabla();
+		$scope.cargarTipoUsuarios();
+		$scope.cargarSucursales();
 
 		// Función para Toast
 		$scope.createToast = function(tipo, mensaje) {
@@ -89,17 +110,94 @@
 			$scope.toasts.splice(index, 1);
 		}
 
-		$scope.saveData = function( item ) {
-			if(  $scope.accion == 'crear' ){
+		$scope.saveData = function( usuario ) {
+			if ($scope.accion == 'crear') {
 				$http({
 					method: 'POST',
 				  	url: 	'../ws/usuarios',
-				  	data: 	{ 
-				  		user: item.user,
-				  		password: item.password,
-				  		nombre: item.nombre,
-				  		usuario_tipo_id: item.usuario_tipo_id
+				  	data: { 
+				  		user: usuario.user,
+				  		password: usuario.password,
+				  		password2: usuario.password2,
+				  		nombre: usuario.nombre,
+				  		idtipousuario: usuario.tipo_usuarios_id,
+				  		idsucursal: usuario.sucursales_id
 				  	}
+				})
+				.then(function successCallback(response) {
+					if( response.data.result ) {
+					    $scope.LlenarTabla();
+					    modal.close();
+					    $scope.createToast("success", "<strong>Éxito: </strong>"+response.data.message);
+					    $timeout( function(){ $scope.closeAlert(0); }, 5000);
+					}
+					else {
+						$scope.createToast("danger", "<strong>Error: </strong>"+response.data.message);
+					    $timeout( function(){ $scope.closeAlert(0); }, 5000);	
+					}
+				}, 
+				function errorCallback(response) {
+				   console.log( response.data.message );
+				});
+			}
+			else if ($scope.accion == 'editar') {
+				$http({
+					method: 'PUT',
+				  	url: 	'../ws/usuarios/'+usuario.id,
+				  	data: { 
+				  		user: usuario.user,
+				  		password: usuario.password,
+				  		password2: usuario.password2,
+				  		nombre: usuario.nombre,
+				  		idtipousuario: usuario.tipo_usuarios_id,
+				  		idsucursal: usuario.sucursales_id,
+				  		estado: $scope.usuario.estado == true ? 1 : 0
+				  	}
+				})
+				.then(function successCallback(response) {
+					if( response.data.result ) {
+					    $scope.LlenarTabla();
+					    modal.close();
+					    $scope.createToast("success", "<strong>Éxito: </strong>"+response.data.message);
+					    $timeout( function(){ $scope.closeAlert(0); }, 3000);
+					}
+					else {
+						$scope.createToast("danger", "<strong>Error: </strong>"+response.data.message);
+					    $timeout( function(){ $scope.closeAlert(0); }, 5000);	
+					}
+				}, 
+				function errorCallback(response) {
+				   console.log( response.data.message );
+				});
+			}
+
+			else if ($scope.accion == 'activar') {
+				$http({
+					method: 'PUT',
+				  	url: 	'../ws/usuarios/'+usuario.id,
+				  	data: 	{estado: 1}
+				})
+				.then(function successCallback(response) {
+					if( response.data.result ) {
+					    $scope.LlenarTabla();
+					    modal.close();
+					    $scope.createToast("success", "<strong>Éxito: </strong>"+response.data.message);
+					    $timeout( function(){ $scope.closeAlert(0); }, 3000);
+					}
+					else {
+						$scope.createToast("danger", "<strong>Error: </strong>"+response.data.message);
+					    $timeout( function(){ $scope.closeAlert(0); }, 5000);	
+					}
+				}, 
+				function errorCallback(response) {
+				   console.log( response.data.message );
+				});
+			}
+			else if ($scope.accion == 'eliminar') {
+				$http({
+					method: 'DELETE',
+				  	url: 	'../ws/usuarios/'+usuario.id,
+				  	data: 	{estado: 0}
 				})
 				.then(function successCallback(response) {
 					if( response.data.result ) {
@@ -121,17 +219,8 @@
 
 		// Funciones para Modales
 		$scope.modalCreateOpen = function() {
-			$scope.item = { usuario_tipo_id: 0 };
-			$scope.opciones = [];
+			$scope.usuario = {};
 			$scope.accion = 'crear';
-
-			$http.get("../ws/tipousuarios", {}).then(function(response) {
-				$scope.tipousuarios = response.data.records;
-			});
-
-			$http.get("../ws/sucursales", {}).then(function(response) {
-				$scope.sucursales = response.data.records;
-			});
 
 			modal = $modal.open({
 				templateUrl: "views/usuarios/modal.html",
@@ -142,16 +231,25 @@
 			});
 		}
 
-		$scope.modalEditOpen = function(data) {
-			$scope.opciones = [];
+		$scope.modalEditOpen = function(data) {			
 			$scope.accion = 'editar';
+			$scope.usuario = data;
 
-			$http.get("../ws/tipousuarios", {}).then(function(response)
-			{
-				$scope.opciones = response.data.records;
+			data.estado == 1 ? $scope.usuario.estado = true : $scope.usuario.estado = false;
+
+			modal = $modal.open({
+				templateUrl: "views/usuarios/modal.html",
+				scope: $scope,
+				size: "md",
+				resolve: function() {},
+				windowClass: "default"
 			});
+		}
 
-			$scope.item = data;
+		$scope.modalDeleteOpen = function(data) {			
+			$scope.accion = 'eliminar';
+
+			$scope.usuario = data;
 			modal = $modal.open({
 				templateUrl: "views/usuarios/modal.html",
 				scope: $scope,
