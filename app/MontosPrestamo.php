@@ -8,4 +8,8 @@ class MontosPrestamo extends Model
 {
     protected $table = 'montos_prestamo';
 	protected $fillable = ['monto','sucursales_id'];
+
+	public function sucursal(){
+		return $this->hasOne('App\sucursales','id','sucursales_id');
+	}
 }

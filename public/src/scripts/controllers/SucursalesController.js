@@ -2,13 +2,11 @@
 {
 	"use strict";
 
-	angular.module("app.usuarios", [])
+	angular.module("app.sucursales", [])
 
-	.controller("UsuariosController", ["$scope", "$filter", "$http", "$modal", "$interval", function($scope, $filter, $http, $modal, $timeout)  {	
+	.controller("SucursalesController", ["$scope", "$filter", "$http", "$modal", "$interval", function($scope, $filter, $http, $modal, $timeout)  {	
 		
-		//Variables generales
-		$scope.tipousuarios = [];
-		$scope.sucursales = [];
+		// Variables generales
 		$scope.datas = [];
 		$scope.currentPageStores = [];
 		$scope.searchKeywords = "";
@@ -21,25 +19,11 @@
 		$scope.toasts = [];
 		var modal;
 
-		$scope.cargarTipoUsuarios = function() {
-			$http.get("../ws/tipousuarios", {}).then(function(response) {
-				if (response.data.result)
-					$scope.tipousuarios = response.data.records;
-			});
-		}
-
-		$scope.cargarSucursales = function() {
-			$http.get("../ws/sucursales", {}).then(function(response) {
-				if (response.data.result) 
-					$scope.sucursales = response.data.records;
-			});
-		}
-
 		$scope.LlenarTabla = function()
 		{
 			$http({
 				method: 'GET',
-			  	url: 	'../ws/usuarios'
+			  	url: 	'../ws/sucursales'
 			})
 			.then(function successCallback(response)  {
 			    $scope.datas = response.data.records;
@@ -89,8 +73,6 @@
 		}	
 
 		$scope.LlenarTabla();
-		$scope.cargarTipoUsuarios();
-		$scope.cargarSucursales();
 
 		// Función para Toast
 		$scope.createToast = function(tipo, mensaje) {
@@ -105,18 +87,15 @@
 			$scope.toasts.splice(index, 1);
 		}
 
-		$scope.saveData = function( usuario ) {
+		$scope.saveData = function( sucursal ) {
 			if ($scope.accion == 'crear') {
 				$http({
 					method: 'POST',
-				  	url: 	'../ws/usuarios',
+				  	url: 	'../ws/sucursales',
 				  	data: { 
-				  		user: usuario.user,
-				  		password: usuario.password,
-				  		password2: usuario.password2,
-				  		nombre: usuario.nombre,
-				  		idtipousuario: usuario.tipo_usuarios_id,
-				  		idsucursal: usuario.sucursales_id
+				  		descripcion: sucursal.descripcion,
+				  		direccion: sucursal.direccion,
+				  		telefono: sucursal.telefono,
 				  	}
 				})
 				.then(function successCallback(response) {
@@ -138,15 +117,11 @@
 			else if ($scope.accion == 'editar') {
 				$http({
 					method: 'PUT',
-				  	url: 	'../ws/usuarios/'+usuario.id,
+				  	url: 	'../ws/sucursales/'+sucursal.id,
 				  	data: { 
-				  		user: usuario.user,
-				  		password: usuario.password,
-				  		password2: usuario.password2,
-				  		nombre: usuario.nombre,
-				  		idtipousuario: usuario.tipo_usuarios_id,
-				  		idsucursal: usuario.sucursales_id,
-				  		estado: $scope.usuario.estado == true ? 1 : 0
+				  		descripcion: sucursal.descripcion,
+				  		direccion: sucursal.direccion,
+				  		telefono: sucursal.telefono,
 				  	}
 				})
 				.then(function successCallback(response) {
@@ -168,7 +143,7 @@
 			else if ($scope.accion == 'eliminar') {
 				$http({
 					method: 'DELETE',
-				  	url: 	'../ws/usuarios/'+usuario.id,
+				  	url: 	'../ws/sucursales/'+sucursal.id,
 				})
 				.then(function successCallback(response) {
 					if( response.data.result ) {
@@ -190,11 +165,11 @@
 
 		// Funciones para Modales
 		$scope.modalCreateOpen = function() {
-			$scope.usuario = {};
+			$scope.sucursal = {};
 			$scope.accion = 'crear';
 
 			modal = $modal.open({
-				templateUrl: "views/usuarios/modal.html",
+				templateUrl: "views/sucursales/modal.html",
 				scope: $scope,
 				size: "md",
 				resolve: function() {},
@@ -204,12 +179,10 @@
 
 		$scope.modalEditOpen = function(data) {			
 			$scope.accion = 'editar';
-			$scope.usuario = data;
-
-			data.estado == 1 ? $scope.usuario.estado = true : $scope.usuario.estado = false;
+			$scope.sucursal = data;
 
 			modal = $modal.open({
-				templateUrl: "views/usuarios/modal.html",
+				templateUrl: "views/sucursales/modal.html",
 				scope: $scope,
 				size: "md",
 				resolve: function() {},
@@ -220,9 +193,8 @@
 		$scope.modalDeleteOpen = function(data) {			
 			$scope.accion = 'eliminar';
 
-			$scope.usuario = data;
 			modal = $modal.open({
-				templateUrl: "views/usuarios/modal.html",
+				templateUrl: "views/sucursales/modal.html",
 				scope: $scope,
 				size: "md",
 				resolve: function() {},

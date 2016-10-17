@@ -2,12 +2,11 @@
 {
 	"use strict";
 
-	angular.module("app.usuarios", [])
+	angular.module("app.planes", [])
 
-	.controller("UsuariosController", ["$scope", "$filter", "$http", "$modal", "$interval", function($scope, $filter, $http, $modal, $timeout)  {	
+	.controller("PlanesController", ["$scope", "$filter", "$http", "$modal", "$interval", function($scope, $filter, $http, $modal, $timeout)  {	
 		
-		//Variables generales
-		$scope.tipousuarios = [];
+		// Variables generales
 		$scope.sucursales = [];
 		$scope.datas = [];
 		$scope.currentPageStores = [];
@@ -21,13 +20,6 @@
 		$scope.toasts = [];
 		var modal;
 
-		$scope.cargarTipoUsuarios = function() {
-			$http.get("../ws/tipousuarios", {}).then(function(response) {
-				if (response.data.result)
-					$scope.tipousuarios = response.data.records;
-			});
-		}
-
 		$scope.cargarSucursales = function() {
 			$http.get("../ws/sucursales", {}).then(function(response) {
 				if (response.data.result) 
@@ -39,7 +31,7 @@
 		{
 			$http({
 				method: 'GET',
-			  	url: 	'../ws/usuarios'
+			  	url: 	'../ws/planes'
 			})
 			.then(function successCallback(response)  {
 			    $scope.datas = response.data.records;
@@ -89,7 +81,6 @@
 		}	
 
 		$scope.LlenarTabla();
-		$scope.cargarTipoUsuarios();
 		$scope.cargarSucursales();
 
 		// Función para Toast
@@ -105,18 +96,16 @@
 			$scope.toasts.splice(index, 1);
 		}
 
-		$scope.saveData = function( usuario ) {
+		$scope.saveData = function( plan ) {
 			if ($scope.accion == 'crear') {
 				$http({
 					method: 'POST',
-				  	url: 	'../ws/usuarios',
+				  	url: 	'../ws/planes',
 				  	data: { 
-				  		user: usuario.user,
-				  		password: usuario.password,
-				  		password2: usuario.password2,
-				  		nombre: usuario.nombre,
-				  		idtipousuario: usuario.tipo_usuarios_id,
-				  		idsucursal: usuario.sucursales_id
+				  		descripcion: plan.descripcion,
+				  		dias: plan.dias,
+				  		porcentaje: plan.porcentaje,
+				  		idsucursal: plan.sucursales_id
 				  	}
 				})
 				.then(function successCallback(response) {
@@ -138,15 +127,12 @@
 			else if ($scope.accion == 'editar') {
 				$http({
 					method: 'PUT',
-				  	url: 	'../ws/usuarios/'+usuario.id,
+				  	url: 	'../ws/planes/'+plan.id,
 				  	data: { 
-				  		user: usuario.user,
-				  		password: usuario.password,
-				  		password2: usuario.password2,
-				  		nombre: usuario.nombre,
-				  		idtipousuario: usuario.tipo_usuarios_id,
-				  		idsucursal: usuario.sucursales_id,
-				  		estado: $scope.usuario.estado == true ? 1 : 0
+				  		descripcion: plan.descripcion,
+				  		dias: plan.dias,
+				  		porcentaje: plan.porcentaje,
+				  		idsucursal: plan.sucursales_id
 				  	}
 				})
 				.then(function successCallback(response) {
@@ -168,7 +154,7 @@
 			else if ($scope.accion == 'eliminar') {
 				$http({
 					method: 'DELETE',
-				  	url: 	'../ws/usuarios/'+usuario.id,
+				  	url: 	'../ws/planes/'+plan.id,
 				})
 				.then(function successCallback(response) {
 					if( response.data.result ) {
@@ -190,11 +176,11 @@
 
 		// Funciones para Modales
 		$scope.modalCreateOpen = function() {
-			$scope.usuario = {};
+			$scope.plan = {};
 			$scope.accion = 'crear';
 
 			modal = $modal.open({
-				templateUrl: "views/usuarios/modal.html",
+				templateUrl: "views/planes/modal.html",
 				scope: $scope,
 				size: "md",
 				resolve: function() {},
@@ -204,12 +190,10 @@
 
 		$scope.modalEditOpen = function(data) {			
 			$scope.accion = 'editar';
-			$scope.usuario = data;
-
-			data.estado == 1 ? $scope.usuario.estado = true : $scope.usuario.estado = false;
+			$scope.plan = data;
 
 			modal = $modal.open({
-				templateUrl: "views/usuarios/modal.html",
+				templateUrl: "views/planes/modal.html",
 				scope: $scope,
 				size: "md",
 				resolve: function() {},
@@ -220,9 +204,8 @@
 		$scope.modalDeleteOpen = function(data) {			
 			$scope.accion = 'eliminar';
 
-			$scope.usuario = data;
 			modal = $modal.open({
-				templateUrl: "views/usuarios/modal.html",
+				templateUrl: "views/planes/modal.html",
 				scope: $scope,
 				size: "md",
 				resolve: function() {},

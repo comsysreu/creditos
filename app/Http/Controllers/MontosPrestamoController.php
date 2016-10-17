@@ -18,7 +18,7 @@ class MontosPrestamoController extends Controller
     public function index()
     {
         try {
-            $registros = MontosPrestamo::all();
+            $registros = MontosPrestamo::with('sucursal')->get();
 
             if ($registros){
                 $this->statusCode   = 200;
