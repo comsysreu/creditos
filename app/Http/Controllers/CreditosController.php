@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Creditos;
 use App\CreditosDetalle;
+use App\CuotasClientes;
 use Session;
 
 class CreditosController extends Controller
@@ -64,9 +65,9 @@ class CreditosController extends Controller
                                                     'clientes_id'           => $request->input('idcliente'),
                                                     'planes_id'             => $request->input('idplan'),
                                                     'montos_prestamo_id'    => $request->input('idmonto'),
-                                                    'usuarios_creo'         => $request->session()->get('idUsuario'),
+                                                    'usuarios_creo'         => $request->session()->get('usuario')->id,
                                                     'usuarios_cobrador'     => $request->input('idusuario'),
-                                                    'saldo'                 => $request->input('deudatotal'),
+                                                    'saldo'                 => $request->input('deudatotal') - $request->input('cuota_diaria'),
                                                     'interes'               => 0,
                                                     'deudatotal'            => $request->input('deudatotal'),
                                                     'cuota_diaria'          => $request->input('cuota_diaria'),
@@ -278,7 +279,15 @@ class CreditosController extends Controller
                 }   
             }
 
-            
+            $registroCuotas = CuotasClientes::where('creditos_id',$request->input('idcredito'))->first();
+
+            $creditos->saldo = $creditos->deudatotal - $registroCuotas->totalabono;
+            $creditos->save();
+
+            $this->statusCode   = 200;
+            $this->result       = true;
+            $this->message      = "Registro creado exitosamente";
+            $this->records      = $registroCuotas;            
 
 
         } catch (\Exception $e) {
@@ -288,6 +297,36 @@ class CreditosController extends Controller
         }
         finally
         {
+            $response = [
+                'result'    => $this->result,
+                'message'   => $this->message,
+                'records'   => $this->records,
+            ];
+
+            return response()->json($response, $this->statusCode);
+        }
+    }
+
+    public function cobradorClientes(Request $request){
+        try {
+            
+            $registros = Creditos::where('usuarios_cobrador',$request->input('idcobrador'))->with('cliente')->get();
+            
+            if( $registros ){
+                $this->statusCode   = 200;
+                $this->result       = true;
+                $this->message      = "Registros consultados exitosamente";
+                $this->records      = $registros;
+            }
+            else
+                throw new \Exception("No se encontraron registros");
+                
+        } catch (\Exception $e) {
+            $this->statusCode   = 200;
+            $this->result       = false;
+            $this->message      = env('APP_DEBUG') ? $e->getMessage() : "Ocurrió un problema al consultar los registros";
+        }
+        finally{
             $response = [
                 'result'    => $this->result,
                 'message'   => $this->message,

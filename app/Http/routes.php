@@ -31,9 +31,14 @@ Route::group(['prefix' => 'ws'], function() {
 		return \Redirect::to('/');
 	});
 
-	Route::get('cobradores',				'UsuariosController@cobradorClientes');
+	Route::get('cobradorclientes',			'CreditosController@cobradorClientes');
 	Route::get('listacobradores',			'UsuariosController@listacobradores');
 	Route::post('registrarabonos',			'CreditosController@registrarAbono');
 
 });
 
+Route::group(['prefix' => 'ws/movil'], function()
+{	
+	Route::any('login',				'CobradorMovilController@loginMovil');
+	Route::any('listaclientes',		'CobradorMovilController@listadoClientesCobrador');
+});

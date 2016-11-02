@@ -156,6 +156,7 @@ class UsuariosController extends Controller
                 \DB::beginTransaction();
                 $registro = Usuarios::find( $id );
                 $registro->tipo_usuarios_id = $request->input('idtipousuario', $registro->tipo_usuarios_id);
+                $registro->nombre           = $request->input('nombre', $registro->nombre);
                 $registro->user             = strtolower($request->input('user', $registro->user));
                 $registro->estado           = $request->input('estado', $registro->estado);
                 $registro->sucursales_id    = $request->input('idsucursal', $registro->sucursales_id);
@@ -229,7 +230,7 @@ class UsuariosController extends Controller
             {
                 //Session::put('idUsuario', Auth::user()->id);
 
-                $request->session()->put('idUsuario', Auth::user()->id);
+                $request->session()->put('usuario', Auth::user());
 
                 $this->records      =   [Auth::user()];
                 $this->message      =   "Sesión iniciada";
@@ -261,38 +262,10 @@ class UsuariosController extends Controller
         }
     }
 
-    public function cobradorClientes(Request $request){
-        try {
-            $registros = Usuarios::where('tipo_usuarios_id',4)->with('cobradorClientes')->get();
-
-            if( $registros ){
-                $this->statusCode   = 200;
-                $this->result       = true;
-                $this->message      = "Registros consultados exitosamente";
-                $this->records      = $registros;
-            }
-            else
-                throw new \Exception("No se encontraron registros");
-                
-        } catch (\Exception $e) {
-            $this->statusCode   = 200;
-            $this->result       = false;
-            $this->message      = env('APP_DEBUG') ? $e->getMessage() : "Ocurrió un problema al consultar los registros";
-        }
-        finally{
-            $response = [
-                'result'    => $this->result,
-                'message'   => $this->message,
-                'records'   => $this->records,
-            ];
-
-            return response()->json($response, $this->statusCode);
-        }
-    }
-
     public function listaCobradores(Request $request){
         try {
-            $registros = Usuarios::where('tipo_usuarios_id',4)->where('estado', 1)->get();
+
+            $registros = Usuarios::where('tipo_usuarios_id',4)->where('sucursales_id',$request->session()->get('usuario')->sucursales_id)->get();
 
             if( $registros ){
                 $this->statusCode   = 200;
