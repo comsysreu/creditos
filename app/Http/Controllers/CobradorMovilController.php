@@ -92,6 +92,8 @@ class CobradorMovilController extends Controller
                         $item['monto_abonado'] = 0;
                     }
 
+                    $item['fecha_inicio'] = \Carbon\Carbon::parse($item->fecha_inicio)->format('d-m-Y');
+                    $item['fecha_limite'] = \Carbon\Carbon::parse($item->fecha_limite)->format('d-m-Y');
                     $totalacobrar = $totalacobrar + $item->cuota_diaria;
                     $totalminimocobrar = $totalminimocobrar + $item->cuota_minima;
                     $cantidadclientes = $cantidadclientes + 1;

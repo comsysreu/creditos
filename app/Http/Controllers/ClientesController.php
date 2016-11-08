@@ -61,6 +61,7 @@ class ClientesController extends Controller
                                                     'apellido'      => $request->input('apellido'),
                                                     'dpi'           => $request->input('dpi'),
                                                     'telefono'      => $request->input('telefono'),
+                                                    'direccion'      => $request->input('direccion'),
                                                     'estado_civil'  => $request->input('estadocivil'),
                                                     'sexo'          => $request->input('sexo'),
                                                     'categoria'     => $request->input('categoria'),
@@ -142,6 +143,7 @@ class ClientesController extends Controller
             $registro->apellido     = $request->input('apellido', $registro->apellido);
             $registro->dpi          = $request->input('dpi', $registro->dpi);
             $registro->telefono     = $request->input('telefono', $registro->telefono);
+            $registro->direccion     = $request->input('direccion', $registro->direccion);
             $registro->estado_civil = $request->input('estadocivil', $registro->estado_civil);
             $registro->sexo         = $request->input('sexo', $registro->sexo);
             $registro->categoria    = $request->input('categoria', $registro->categoria);
