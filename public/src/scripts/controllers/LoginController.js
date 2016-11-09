@@ -20,7 +20,7 @@
 							"app.email.ctrls",
 							"app.constants"])
 
-	.controller("LoginController", ["$scope", "$http", "$window", "localStorageService", "$interval", "API_URL" function($scope, $http,$window, localStorageService, $timeout, API_URL) 
+	.controller("LoginController", ["$scope", "$http", "$window", "localStorageService", "$interval", "API_URL", function($scope, $http,$window, localStorageService, $timeout, API_URL) 
 	{
 		$scope.positionModel = "topRight";
 		$scope.toasts = [];
