@@ -2,9 +2,9 @@
 {
 	"use strict";
 
-	angular.module("app.usuarios", [])
+	angular.module("app.usuarios", ["app.constants"])
 
-	.controller("UsuariosController", ["$scope", "$filter", "$http", "$modal", "$interval", function($scope, $filter, $http, $modal, $timeout)  {	
+	.controller("UsuariosController", ["$scope", "$filter", "$http", "$modal", "$interval", "API_URL", function($scope, $filter, $http, $modal, $timeout, API_URL)  {	
 		
 		//Variables generales
 		$scope.tipousuarios = [];
@@ -22,14 +22,14 @@
 		var modal;
 
 		$scope.cargarTipoUsuarios = function() {
-			$http.get("../ws/tipousuarios", {}).then(function(response) {
+			$http.get(API_URL+'tipousuarios', {}).then(function(response) {
 				if (response.data.result)
 					$scope.tipousuarios = response.data.records;
 			});
 		}
 
 		$scope.cargarSucursales = function() {
-			$http.get("../ws/sucursales", {}).then(function(response) {
+			$http.get(API_URL+'sucursales', {}).then(function(response) {
 				if (response.data.result) 
 					$scope.sucursales = response.data.records;
 			});
@@ -39,7 +39,7 @@
 		{
 			$http({
 				method: 'GET',
-			  	url: 	'../ws/usuarios'
+			  	url: 	API_URL+'usuarios'
 			})
 			.then(function successCallback(response)  {
 			    $scope.datas = response.data.records;
@@ -48,7 +48,6 @@
 			}, 
 			function errorCallback(response)  {			
 			   console.log( response.data.message );
-			   console.log("aqui");
 			});
 		}
 
@@ -110,15 +109,8 @@
 			if ($scope.accion == 'crear') {
 				$http({
 					method: 'POST',
-				  	url: 	'../ws/usuarios',
-				  	data: { 
-				  		user: usuario.user,
-				  		password: usuario.password,
-				  		password2: usuario.password2,
-				  		nombre: usuario.nombre,
-				  		idtipousuario: usuario.tipo_usuarios_id,
-				  		idsucursal: usuario.sucursales_id
-				  	}
+				  	url: 	API_URL+'usuarios',
+				  	data: 	usuario
 				})
 				.then(function successCallback(response) {
 					if( response.data.result ) {
@@ -139,7 +131,7 @@
 			else if ($scope.accion == 'editar') {
 				$http({
 					method: 'PUT',
-				  	url: 	'../ws/usuarios/'+usuario.id,
+				  	url: 	API_URL+'usuarios/'+usuario.id,
 				  	data: { 
 				  		user: usuario.user,
 				  		password: usuario.password,
@@ -169,7 +161,7 @@
 			else if ($scope.accion == 'eliminar') {
 				$http({
 					method: 'DELETE',
-				  	url: 	'../ws/usuarios/'+usuario.id,
+				  	url: 	API_URL+'usuarios/'+usuario.id,
 				})
 				.then(function successCallback(response) {
 					if( response.data.result ) {

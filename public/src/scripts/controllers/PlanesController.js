@@ -2,9 +2,9 @@
 {
 	"use strict";
 
-	angular.module("app.planes", [])
+	angular.module("app.planes", ["app.constants"])
 
-	.controller("PlanesController", ["$scope", "$filter", "$http", "$modal", "$interval", function($scope, $filter, $http, $modal, $timeout)  {	
+	.controller("PlanesController", ["$scope", "$filter", "$http", "$modal", "$interval", "API_URL", function($scope, $filter, $http, $modal, $timeout, API_URL)  {	
 		
 		// Variables generales
 		$scope.sucursales = [];
@@ -21,7 +21,7 @@
 		var modal;
 
 		$scope.cargarSucursales = function() {
-			$http.get("../ws/sucursales", {}).then(function(response) {
+			$http.get(API_URL+'sucursales', {}).then(function(response) {
 				if (response.data.result) 
 					$scope.sucursales = response.data.records;
 			});
@@ -31,7 +31,7 @@
 		{
 			$http({
 				method: 'GET',
-			  	url: 	'../ws/planes'
+			  	url: 	API_URL+'planes'
 			})
 			.then(function successCallback(response)  {
 			    $scope.datas = response.data.records;
@@ -100,7 +100,7 @@
 			if ($scope.accion == 'crear') {
 				$http({
 					method: 'POST',
-				  	url: 	'../ws/planes',
+				  	url: 	API_URL+'planes',
 				  	data: { 
 				  		descripcion: plan.descripcion,
 				  		dias: plan.dias,
@@ -127,7 +127,7 @@
 			else if ($scope.accion == 'editar') {
 				$http({
 					method: 'PUT',
-				  	url: 	'../ws/planes/'+plan.id,
+				  	url: 	API_URL+'planes/'+plan.id,
 				  	data: { 
 				  		descripcion: plan.descripcion,
 				  		dias: plan.dias,
@@ -154,7 +154,7 @@
 			else if ($scope.accion == 'eliminar') {
 				$http({
 					method: 'DELETE',
-				  	url: 	'../ws/planes/'+plan.id,
+				  	url: 	API_URL+'planes/'+plan.id,
 				})
 				.then(function successCallback(response) {
 					if( response.data.result ) {

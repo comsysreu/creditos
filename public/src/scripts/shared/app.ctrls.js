@@ -2,10 +2,14 @@
 "use strict";
 
 
-angular.module("app.ctrls", [])
+angular.module("app.ctrls", ["LocalStorageModule"])
 
 // Root Controller
-.controller("AppCtrl", ["$rootScope", "$scope", "$timeout", function($rs, $scope, $timeout) {
+.controller("AppCtrl", ["$rootScope", "$scope", "$timeout","$window", "localStorageService", function($rs, $scope, $timeout, $window, localStorageService) {
+
+	if(!localStorageService.cookie.get('usuario'))
+		window.location.href = "login.html";
+	
 	var mm = window.matchMedia("(max-width: 767px)");
 	$rs.isMobile = mm.matches ? true: false;
 
@@ -25,10 +29,6 @@ angular.module("app.ctrls", [])
 			$rs.isMobile = (m.matches) ? true : false;
 		});	
 	});
-
-	// if(!localStorage.login)
-	// 	window.location.href = "login.html";
-
 	
 	$scope.navFull = true;
 	$scope.toggleNav = function() {
@@ -118,7 +118,7 @@ angular.module("app.ctrls", [])
 }])
 
 
-.controller("HeadCtrl", ["$scope", "Fullscreen", function($scope, Fullscreen) {
+.controller("HeadCtrl", ["$scope", "Fullscreen", "localStorageService", "$window", function($scope, Fullscreen, localStorageService, $window) {
 	$scope.toggleFloatingSidebar = function() {
 		$scope.floatingSidebar = $scope.floatingSidebar ? false : true;
 		console.log("floating-sidebar: " + $scope.floatingSidebar);
@@ -131,7 +131,10 @@ angular.module("app.ctrls", [])
          	Fullscreen.all()
 	};
 
-	
+	$scope.cerrarSesion = function(){
+		localStorageService.cookie.remove('usuario');
+		window.location.href = "login.html";
+	}	
 }])
 
 

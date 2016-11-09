@@ -2,9 +2,9 @@
 {
 	"use strict";
 
-	angular.module("app.montos", [])
+	angular.module("app.montos", ["app.constants"])
 
-	.controller("MontosController", ["$scope", "$filter", "$http", "$modal", "$interval", function($scope, $filter, $http, $modal, $timeout)  {	
+	.controller("MontosController", ["$scope", "$filter", "$http", "$modal", "$interval", "API_URL", function($scope, $filter, $http, $modal, $timeout, API_URL)  {	
 		
 		// Variables generales
 		$scope.sucursales = [];
@@ -21,7 +21,7 @@
 		var modal;
 
 		$scope.cargarSucursales = function() {
-			$http.get("../ws/sucursales", {}).then(function(response) {
+			$http.get(API_URL+'sucursales', {}).then(function(response) {
 				if (response.data.result) 
 					$scope.sucursales = response.data.records;
 			});
@@ -31,7 +31,7 @@
 		{
 			$http({
 				method: 'GET',
-			  	url: 	'../ws/montosprestamo'
+			  	url: 	API_URL+'montosprestamo'
 			})
 			.then(function successCallback(response)  {
 			    $scope.datas = response.data.records;
@@ -100,7 +100,7 @@
 			if ($scope.accion == 'crear') {
 				$http({
 					method: 'POST',
-				  	url: 	'../ws/montosprestamo',
+				  	url: 	API_URL+'montosprestamo',
 				  	data: { 
 				  		monto: monto.monto,
 				  		idsucursal: monto.sucursales_id
@@ -125,7 +125,7 @@
 			else if ($scope.accion == 'editar') {
 				$http({
 					method: 'PUT',
-				  	url: 	'../ws/montosprestamo/'+monto.id,
+				  	url: 	API_URL+'montosprestamo/'+monto.id,
 				  	data: { 
 				  		monto: monto.monto,
 				  		idsucursal: monto.sucursales_id
@@ -150,7 +150,7 @@
 			else if ($scope.accion == 'eliminar') {
 				$http({
 					method: 'DELETE',
-				  	url: 	'../ws/montosprestamo/'+monto.id,
+				  	url: 	API_URL+'montosprestamo/'+monto.id,
 				})
 				.then(function successCallback(response) {
 					if( response.data.result ) {

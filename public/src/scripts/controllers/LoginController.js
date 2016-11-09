@@ -17,30 +17,46 @@
 							"app.ui.directives",
 							"app.form.ctrls",
 							"app.table.ctrls",
-							"app.email.ctrls"])
+							"app.email.ctrls",
+							"app.constants"])
 
-	.controller("LoginController", ["$scope", "$http", "$window", "localStorageService", function($scope, $http,$window, localStorageService) 
+	.controller("LoginController", ["$scope", "$http", "$window", "localStorageService", "$interval", "API_URL" function($scope, $http,$window, localStorageService, $timeout, API_URL) 
 	{
+		$scope.positionModel = "topRight";
+		$scope.toasts = [];
+
+		$scope.createToast = function(tipo, mensaje) {
+			$scope.toasts.push({
+				anim: "bouncyflip",
+				type: tipo,
+				msg: mensaje
+			});
+		}
+
+		$scope.closeAlert = function(index) {
+			$scope.toasts.splice(index, 1);
+		}
+
 		localStorageService.cookie.clearAll();	  
 		$scope.loginUsuario = function(item) 
 		{
 		  	$scope.item = item;
 	        $http({
-	            method: "POST",
-	            url: "../../ws/login",
-	            data: {
-	            	usuario: item.usuario,
+	            method: 	'POST',
+	            url: 		API_URL+'login',
+	            data: 		{
+	            	user: item.user,
 	            	password: item.password
 	            }
 	        })
 	        .then(function succesCallback(response){
 	           	if(response.data.result){     
-	           		localStorageService.cookie.set("login",response.data.records,10);	           		
+	           		localStorageService.cookie.set('usuario', response.data.records[0]);         		
 	            	$window.location.href = "./#/dashboard";
 	           	}
 	           	else {
-	            	$window.alert( response.data.message );
-	            	$window.location.href = "login.html";
+	            	$scope.createToast("danger", "<strong>Error: </strong>"+response.data.message);
+					$timeout( function(){ $scope.closeAlert(0); }, 5000);
 	           	}
 		    },
 		    function errorCallback(response) {
