@@ -175,7 +175,6 @@ class CreditosController extends Controller
     public function registrarAbono(Request $request)
     {
         try {
-
             $creditos = Creditos::where('id', $request->input('idcredito'))->with('planes','montos')->first();
             $cantidadPendiente = CreditosDetalle::where('creditos_id', $creditos->id)->where('estado',0)->first();
             
@@ -281,8 +280,17 @@ class CreditosController extends Controller
 
             $registroCuotas = CuotasClientes::where('creditos_id',$request->input('idcredito'))->first();
 
-            $creditos->saldo = $creditos->deudatotal - $registroCuotas->totalabono;
-            $creditos->save();
+            $saldo = $creditos->deudatotal - $registroCuotas->totalabono;
+            
+            if ($saldo == 0) {
+                $creditos->saldo = $saldo;
+                $creditos->estado = 0;
+                $creditos->save();
+            }
+            else{
+                $creditos->saldo = $saldo;
+                $creditos->save();
+            }
 
             $this->statusCode   = 200;
             $this->result       = true;
@@ -309,7 +317,36 @@ class CreditosController extends Controller
 
     public function cobradorClientes(Request $request){
         try {
+            $registros = Creditos::where('usuarios_cobrador',$request->input('idcobrador'))->with('cliente')->get();
             
+            if( $registros ){
+                $this->statusCode   = 200;
+                $this->result       = true;
+                $this->message      = "Registros consultados exitosamente";
+                $this->records      = $registros;
+            }
+            else
+                throw new \Exception("No se encontraron registros");
+                
+        } catch (\Exception $e) {
+            $this->statusCode   = 200;
+            $this->result       = false;
+            $this->message      = env('APP_DEBUG') ? $e->getMessage() : "Ocurrió un problema al consultar los registros";
+        }
+        finally{
+            $response = [
+                'result'    => $this->result,
+                'message'   => $this->message,
+                'records'   => $this->records,
+            ];
+
+            return response()->json($response, $this->statusCode);
+        }
+    }
+
+    public function renovarCredito(Request $request)
+    {
+        try {
             $registros = Creditos::where('usuarios_cobrador',$request->input('idcobrador'))->with('cliente')->get();
             
             if( $registros ){
