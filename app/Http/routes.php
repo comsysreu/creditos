@@ -24,6 +24,7 @@ Route::group(['prefix' => 'ws'], function() {
 	Route::resource('referenciasclientes',	'ReferenciasPersonalesClientesController');
 	Route::resource('creditos',				'CreditosController');
 	Route::resource('usuarios',				'UsuariosController');
+	Route::any('insertar/envases',			'EnvasesController@insertarEnvaseNuevo');
 	Route::post('login',					'UsuariosController@login');
 
 	Route::get('logout',function() {

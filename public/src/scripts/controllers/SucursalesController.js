@@ -2,9 +2,9 @@
 {
 	"use strict";
 
-	angular.module("app.sucursales", [])
+	angular.module("app.sucursales", ["app.constants"])
 
-	.controller("SucursalesController", ["$scope", "$filter", "$http", "$modal", "$interval", function($scope, $filter, $http, $modal, $timeout)  {	
+	.controller("SucursalesController", ["$scope", "$filter", "$http", "$modal", "$interval", "API_URL", function($scope, $filter, $http, $modal, $timeout, API_URL)  {	
 		
 		// Variables generales
 		$scope.datas = [];
@@ -23,7 +23,7 @@
 		{
 			$http({
 				method: 'GET',
-			  	url: 	'../ws/sucursales'
+			  	url: 	API_URL+'sucursales'
 			})
 			.then(function successCallback(response)  {
 			    $scope.datas = response.data.records;
@@ -92,7 +92,7 @@
 			if ($scope.accion == 'crear') {
 				$http({
 					method: 'POST',
-				  	url: 	'../ws/sucursales',
+				  	url: 	API_URL+'sucursales',
 				  	data: { 
 				  		descripcion: sucursal.descripcion,
 				  		direccion: sucursal.direccion,
@@ -118,7 +118,7 @@
 			else if ($scope.accion == 'editar') {
 				$http({
 					method: 'PUT',
-				  	url: 	'../ws/sucursales/'+sucursal.id,
+				  	url: 	API_URL+'sucursales/'+sucursal.id,
 				  	data: { 
 				  		descripcion: sucursal.descripcion,
 				  		direccion: sucursal.direccion,
@@ -144,7 +144,7 @@
 			else if ($scope.accion == 'eliminar') {
 				$http({
 					method: 'DELETE',
-				  	url: 	'../ws/sucursales/'+sucursal.id,
+				  	url: 	API_URL+'sucursales/'+sucursal.id,
 				})
 				.then(function successCallback(response) {
 					if( response.data.result ) {

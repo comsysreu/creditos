@@ -25,11 +25,11 @@
 				<form class="form-horizontal" action="javascript:;">
 					<md-input-container>
 						<label>Usuario</label>
-						<input type="text" ng-model="item.usuario" name="usuario" id="usuario" placeholder="Ingresa tu usuario">
+						<input type="text" ng-model="item.user" id="usuario">
 					</md-input-container>
 					<md-input-container>
 						<label>Contraseña</label>
-						<input type="password" ng-model="item.password" name="password" id="password" placeholder="Ingresa tu contraseña">
+						<input type="password" ng-model="item.password" id="password">
 					</md-input-container>			
 					<div class="clearfix">
 						<div class="ui-checkbox ui-checkbox-primary right">
@@ -43,7 +43,12 @@
 					<div class="clearfix text-center small">
 					</div>
 				</form>
-			</div>		 
+			</div>	
+			<div class="toast toast-{{positionModel}}">
+				<alert ng-repeat="toast in toasts" type="{{toast.type}}" close="closeAlert($index)" class="toast-{{toast.anim}}">
+					<div ng-bind-html="toast.msg"></div>
+				</alert>
+			</div>	 
 		</div> <!-- #end signin-container -->
 	</div>	
 	<script src="scripts/dev/less.min.js"></script>	
@@ -70,6 +75,7 @@
 	<script src="scripts/email/app.email.ctrls.js"></script>
 	<script src="scripts/todo/app.todo.js"></script>
 	<!-- /build -->
+	<script src="scripts/constants/app.constants.js"></script>
 	<script src="scripts/controllers/LoginController.js"></script>
 	<!-- /build -->
 	<script src="../bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
