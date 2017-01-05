@@ -35,7 +35,7 @@ Route::group(['prefix' => 'ws'], function() {
 	Route::get('cobradorclientes',			'CreditosController@cobradorClientes');
 	Route::get('listacobradores',			'UsuariosController@listacobradores');
 	Route::post('registrarabonos',			'CreditosController@registrarAbono');
-
+	Route::get('buscarcliente',				'ClientesController@buscarCliente');
 });
 
 Route::group(['prefix' => 'ws/movil'], function()

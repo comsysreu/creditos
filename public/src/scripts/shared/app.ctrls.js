@@ -138,6 +138,11 @@ angular.module("app.ctrls", ["LocalStorageModule"])
 }])
 
 
+.controller("NavCtrl", ["$scope", "localStorageService", function($scope, localStorageService) {
+	$scope.usuario = localStorageService.cookie.get('usuario');
+}])
+
+
 /// ==== Dashboard Controller
 .controller("DashboardCtrl", ["$scope", function($scope) {
 

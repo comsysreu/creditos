@@ -62,10 +62,10 @@ class ClientesController extends Controller
                                                     'dpi'           => $request->input('dpi'),
                                                     'telefono'      => $request->input('telefono'),
                                                     'direccion'      => $request->input('direccion'),
-                                                    'estado_civil'  => $request->input('estadocivil'),
+                                                    'estado_civil'  => $request->input('estado_civil'),
                                                     'sexo'          => $request->input('sexo'),
-                                                    'categoria'     => $request->input('categoria'),
-                                                    'color'         => $request->input('color'),
+                                                    'categoria'     => 'A',
+                                                    'color'         => 'verde',
                                                 ]);
 
                                 if( !$nuevoRegistro )
@@ -144,7 +144,7 @@ class ClientesController extends Controller
             $registro->dpi          = $request->input('dpi', $registro->dpi);
             $registro->telefono     = $request->input('telefono', $registro->telefono);
             $registro->direccion     = $request->input('direccion', $registro->direccion);
-            $registro->estado_civil = $request->input('estadocivil', $registro->estado_civil);
+            $registro->estado_civil = $request->input('estado_civil', $registro->estado_civil);
             $registro->sexo         = $request->input('sexo', $registro->sexo);
             $registro->categoria    = $request->input('categoria', $registro->categoria);
             $registro->color        = $request->input('color', $registro->color);
@@ -197,6 +197,37 @@ class ClientesController extends Controller
             $response = [
                 'result'    => $this->result,
                 'message'   => $this->message,
+            ];
+
+            return response()->json($response, $this->statusCode);
+        }
+    }
+
+    public function buscarCliente(Request $request)
+    {
+        try {
+            $registro = Clientes::where('dpi', $request->input('dpi') )->with('creditos')->first();
+
+            if( $registro ){
+                $this->statusCode   = 200;
+                $this->result       = true;
+                $this->message      = "Registro consultado exitosamente";
+                $this->records      = $registro;
+            }
+            else
+                throw new \Exception("No se encontró el registro");
+                
+        } catch (\Exception $e) {
+            $this->statusCode   = 200;
+            $this->result       = false;
+            $this->message      = env('APP_DEBUG') ? $e->getMessage() : "Ocurrió un problema al consultar el registro";
+        }
+        finally
+        {
+            $response = [
+                'result'    => $this->result,
+                'message'   => $this->message,
+                'records'   => $this->records,
             ];
 
             return response()->json($response, $this->statusCode);
