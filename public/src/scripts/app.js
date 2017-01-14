@@ -155,6 +155,19 @@
 				}]
 			}
 		});
+
+		$routeProvider.when("/creditos", {
+			templateUrl: "views/creditos/creditos.html",
+			controller: "CreditosController",
+			resolve: {
+				deps: ["$ocLazyLoad", function(a) {
+					return a.load({
+						name: "app.creditos",
+						files: ["scripts/controllers/CreditosController.js"]
+					})
+				}]
+			}
+		});
 		
 		$routeProvider.when("/usuarios", {
 			templateUrl: "views/usuarios/usuarios.html",
@@ -164,6 +177,19 @@
 					return a.load({
 						name: "app.usuarios",
 						files: ["scripts/controllers/UsuariosController.js"]
+					})
+				}]
+			}
+		});
+
+		$routeProvider.when("/clientes", {
+			templateUrl: "views/clientes/clientes.html",
+			controller: "ClientesController",
+			resolve: {
+				deps: ["$ocLazyLoad", function(a) {
+					return a.load({
+						name: "app.clientes",
+						files: ["scripts/controllers/ClientesController.js"]
 					})
 				}]
 			}

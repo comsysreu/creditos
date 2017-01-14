@@ -1,0 +1,89 @@
+<div class="page">
+	<div class="page-wrap">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default panel-hovered panel-stacked mb20">
+					<div class="panel-heading"><h4>Nuevo crédito</h4></div>
+					<div class="panel-body">
+						<form role="form" class="form-horizontal" ng-submit="validarCliente(cliente)">
+							<div class="form-group">
+								<label class="col-sm-1 control-label">Número de DPI:</label>
+								<div class="col-md-5">
+									<input type="number" class="form-control" ng-model="cliente.dpi">
+								</div>
+								<div class="col-md-1">
+									<button type="button" class="btn btn-info ion ion-plus" ng-click="modalEditOpen(data)" md-ink-ripple></button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row hidden" id="row-detalle">
+			<div class="col-sm-12">
+				<div class="panel panel-default panel-hovered panel-stacked mb20">
+				<div class="panel-heading">Detalle del crédito</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-4">
+								<label>Nombre</label>
+								<input type="text" class="form-control" ng-model="detalle_cliente.nombre" disabled>
+							</div>
+							<div class="col-sm-4">
+								<label>Dirección</label>
+								<input type="text" class="form-control" ng-model="detalle_cliente.direccion" disabled>
+							</div>
+							<div class="col-sm-4">
+								<label>Teléfono</label>
+								<input type="text" class="form-control" ng-model="detalle_cliente.telefono" disabled>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-sm-4">
+								<label>Plan de préstamo</label>
+								<input type="text" class="form-control">
+							</div>
+							<div class="col-sm-4">
+								<label>Monto</label>
+								<input type="text" class="form-control">
+							</div>
+							<div class="col-sm-4">
+								<label>Interés</label>
+								<input type="text" class="form-control" ng-model="detalle_cliente.interes" disabled>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-sm-4">
+								<label>Cuota diaria</label>
+								<input type="text" class="form-control" ng-model="detalle_cliente.cuota_diaria" disabled>
+							</div>
+							<div class="col-sm-4">
+								<label>Fecha inicio</label>
+								<input type="text" class="form-control" ng-bind="detalle_cliente.fecha_inicio | date:'MM/dd/yyyy'" ng-model="detalle_cliente.fecha_inicio" disabled>
+							</div>
+							<div class="col-sm-4">
+								<label>Fecha fin</label>
+								<input type="text" class="form-control" ng-model="detalle_cliente.fecha_fin" disabled>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-sm-4">
+								<label>Cobrador</label>
+								<input type="text" class="form-control">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="toast toast-{{positionModel}}">
+			<alert ng-repeat="toast in toasts" type="{{toast.type}}" close="closeAlert($index)" class="toast-{{toast.anim}}">
+				<div ng-bind-html="toast.msg"></div>
+			</alert>
+		</div>
+	</div>
+</div>
