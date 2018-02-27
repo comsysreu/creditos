@@ -24,7 +24,7 @@ class UsuariosController extends Controller
     public function index()
     {
         try {
-            $registros = Usuarios::with('tipoUsuarios','sucursal')->get();
+            $registros = Usuarios::where("estado", 1)->with('tipoUsuarios','sucursal')->get();
 
             if( $registros ){
                 $this->statusCode   = 200;
@@ -36,7 +36,7 @@ class UsuariosController extends Controller
                 throw new \Exception("No se encontraron registros");
                 
         } catch (\Exception $e) {
-            $this->statusCode   = 200;
+            $this->statusCode   = 404;
             $this->result       = false;
             $this->message      = env('APP_DEBUG') ? $e->getMessage() : "Ocurrió un problema al consultar los registros";
         }
@@ -124,7 +124,7 @@ class UsuariosController extends Controller
                 throw new \Exception("No se encontró el registro");
                 
         } catch (\Exception $e) {
-            $this->statusCode   = 200;
+            $this->statusCode   = 404;
             $this->result       = false;
             $this->message      = env('APP_DEBUG') ? $e->getMessage() : "Ocurrió un problema al consultar el registro";
         }

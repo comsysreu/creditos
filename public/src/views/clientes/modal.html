@@ -8,11 +8,17 @@
 	<div class="modal-body">
 		<form class="form-horizontal" name="modal-demo-form" ng-if="accion == 'crear' || accion == 'editar'" action="javascript:;">
 			<div class="row form-group">
-				<div class="col-sm-6">
+				<div class="col-sm-12">
+					<label>DPI</label>
+					<input type="text" class="form-control" ng-model="cliente.dpi">
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
 					<label>Nombre</label>
 					<input type="text" class="form-control" ng-model="cliente.nombre">
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-12">
 					<label>Apellido</label>
 					<input type="text" class="form-control" ng-model="cliente.apellido">
 				</div>
@@ -25,15 +31,9 @@
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-6">
-					<label>DPI</label>
-					<input type="text" class="form-control" ng-model="cliente.dpi">
-				</div>
-				<div class="col-sm-6">
 					<label>Teléfono</label>
 					<input type="text" class="form-control" ng-model="cliente.telefono">
 				</div>
-			</div>
-			<div class="row form-group">
 				<div class="col-sm-6">
 					<label class="control-label">Género</label>
 					<select class="form-control" ng-model="cliente.sexo">
@@ -42,6 +42,8 @@
 						<option value="2">Femenino</option>
 					</select>
 				</div>
+			</div>
+			<div class="row form-group">
 				<div class="col-sm-6">
 					<label class="control-label">Estado civil</label>
 					<select class="form-control" ng-model="cliente.estado_civil">

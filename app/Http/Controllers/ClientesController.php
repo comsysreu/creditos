@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Clientes;
+use App\Creditos;
+use App\CreditosDetalle;
 
 class ClientesController extends Controller
 {
@@ -207,8 +209,16 @@ class ClientesController extends Controller
     {
         try {
             $registro = Clientes::where('dpi', $request->input('dpi') )->with('creditos')->first();
+            $ultimoAbono = CreditosDetalle::where('creditos_id', $registro->creditos->id)->orderBy('id', 'desc')->first();
+            $abono = 0;
+
+            if( $ultimoAbono ){
+                if($ultimoAbono->estado == 0)
+                    $abono = $ultimoAbono->abono; 
+            }
 
             if( $registro ){
+                $registro->creditos->saldo_abonado = $abono;
                 $this->statusCode   = 200;
                 $this->result       = true;
                 $this->message      = "Registro consultado exitosamente";
@@ -216,6 +226,48 @@ class ClientesController extends Controller
             }
             else
                 throw new \Exception("No se encontró el registro");
+                
+        } catch (\Exception $e) {
+            $this->statusCode   = 200;
+            $this->result       = false;
+            $this->message      = env('APP_DEBUG') ? $e->getMessage() : "Ocurrió un problema al consultar el registro";
+        }
+        finally
+        {
+            $response = [
+                'result'    => $this->result,
+                'message'   => $this->message,
+                'records'   => $this->records,
+            ];
+
+            return response()->json($response, $this->statusCode);
+        }
+    }
+
+    public function detalleCreditoCliente(Request $request){
+        try {
+            $registro = Creditos::where('clientes_id', $request->input('cliente_id'))->with('cliente','planes','montos','usuariocobrador','detalleCreditos')->first();
+            if ( $registro ) {
+                $cuotas = 0;
+
+                foreach ($registro->detalleCreditos as $valRegistro) {
+
+                    if( $valRegistro['estado'] == 1 )
+                    {
+                        $cuotas = $cuotas + 1;
+                    }
+                }
+                $registro->cuotasPagadas = $cuotas;
+                $registro->cuotasPendientes = $registro->planes->dias - $registro->cuotas;
+
+
+                $this->statusCode   = 200;
+                $this->result       = true;
+                $this->message      = "Registro consultado exitosamente";
+                $this->records      = $registro;
+            }
+            else
+                throw new \Exception("Error al consultar el registro");
                 
         } catch (\Exception $e) {
             $this->statusCode   = 200;

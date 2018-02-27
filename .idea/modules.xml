@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../bmp/.idea/bmp.iml" filepath="$PROJECT_DIR$/../bmp/.idea/bmp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/creditos.iml" filepath="$PROJECT_DIR$/.idea/creditos.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../gps-cbc/.idea/gps-cbc.iml" filepath="$PROJECT_DIR$/../gps-cbc/.idea/gps-cbc.iml" />
+    </modules>
+  </component>
+</project>

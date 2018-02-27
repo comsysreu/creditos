@@ -1,61 +1,63 @@
-<div class="modal-style">	
+<div class="modal-style">
 	<div class="modal-header clearfix">
-		<h4 ng-if="accion == 'crear'" class="modal-title">Nuevo usuario</h4>
-		<h4 ng-if="accion == 'editar'" class="modal-title">Editar usuario</h4>
-		<h4 ng-if="accion == 'eliminar'" class="modal-title">Eliminar usuario</h4>
+		<h4 ng-if="accion == 'crear'" class="modal-title">Nuevo cliente</h4>
 		<span class="close ion ion-android-close" ng-click="modalClose()"></span>
 	</div>
 	<div class="modal-body">
 		<form class="form-horizontal" name="modal-demo-form" ng-if="accion == 'crear' || accion == 'editar'" action="javascript:;">
 			<div class="row form-group">
-				<div class="col-sm-6">
-					<label>Nombre de usuario</label>
-					<input type="text" class="form-control" ng-model="usuario.nombre">
+				<div class="col-sm-12">
+					<label>DPI</label>
+					<input type="text" class="form-control" ng-model="cliente.dpi">
 				</div>
-				<div class="col-sm-6">
-					<label>Usuario</label>
-					<input type="text" class="form-control" ng-model="usuario.user">
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label>Nombre</label>
+					<input type="text" class="form-control" ng-model="cliente.nombre">
+				</div>
+				<div class="col-sm-12">
+					<label>Apellido</label>
+					<input type="text" class="form-control" ng-model="cliente.apellido">
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12">
+					<label>Dirección</label>
+					<input type="text" class="form-control" ng-model="cliente.direccion">
 				</div>
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-6">
-					<label>Contraseña</label>
-					<input type="password" class="form-control" ng-model="usuario.password">
+					<label>Teléfono</label>
+					<input type="text" class="form-control" ng-model="cliente.telefono">
 				</div>
 				<div class="col-sm-6">
-					<label>Contraseña 2</label>
-					<input type="password" class="form-control" ng-model="usuario.password2">
+					<label class="control-label">Género</label>
+					<select class="form-control" ng-model="cliente.sexo">
+						<option value="0" selected>Seleccione</option>
+						<option value="1">Masculino</option>
+						<option value="2">Femenino</option>
+					</select>
 				</div>
 			</div>
 			<div class="row form-group">
 				<div class="col-sm-6">
-					<label class="control-label">Tipo de usuario</label>
-					<select class="form-control" ng-model="usuario.tipo_usuarios_id" ng-options="item.id as item.descripcion for item in tipousuarios"></select>
-				</div>
-				<div class="col-sm-6">
-					<label class="control-label">Sucursal</label>
-					<select class="form-control" ng-model="usuario.sucursales_id" ng-options="item.id as item.descripcion for item in sucursales"></select>
-				</div>
-			</div>
-			<div class="row form-group" ng-if="accion == 'editar'">
-				<div class="col-sm-6">
-					<div class="ui-checkbox">
-						<label>
-							<input type="checkbox" ng-model="usuario.estado"> 
-							<span>Activo</span>
-						</label>
-					</div>
+					<label class="control-label">Estado civil</label>
+					<select class="form-control" ng-model="cliente.estado_civil">
+						<option value="0" selected>Seleccione</option>
+						<option value="1">Soltero (a)</option>
+						<option value="2">Casado (a)</option>
+					</select>
 				</div>
 			</div>
 		</form>
 		<div class="row form-group" ng-if="accion == 'eliminar'">
-			<h3>¿Realmente desea eliminar este usuario?</h3>
+			<h3>¿Realmente desea eliminar este cliente?</h3>
 		</div>
 		<div class="row form-group">
 			<div class="col-sm-12 text-right">
-				<button class="btn btn-success" ng-if="accion == 'crear'" ng-click="saveData(usuario)">Registrar</button>
-				<button class="btn btn-success" ng-if="accion == 'editar'" ng-click="saveData(usuario)">Actualizar</button>
-				<button class="btn btn-danger" ng-if="accion == 'eliminar'" ng-click="saveData(usuario)">Confirmar</button>
+				<button class="btn btn-success" ng-if="accion == 'crear'" ng-click="saveDataNewClient(cliente)">Registrar</button>
 			</div>
 		</div>
 	</div>

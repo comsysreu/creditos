@@ -5,14 +5,14 @@
 				<div class="panel panel-default panel-hovered panel-stacked mb20">
 					<div class="panel-heading"><h4>Nuevo crédito</h4></div>
 					<div class="panel-body">
-						<form role="form" class="form-horizontal" ng-submit="validarCliente(cliente)">
+						<form role="form" class="form-horizontal" ng-submit="validarCliente(search_client)">
 							<div class="form-group">
 								<label class="col-sm-1 control-label">Número de DPI:</label>
 								<div class="col-md-5">
-									<input type="number" class="form-control" ng-model="cliente.dpi">
+									<input type="number" class="form-control" ng-model="search_client.dpi">
 								</div>
 								<div class="col-md-1">
-									<button type="button" class="btn btn-info ion ion-plus" ng-click="modalEditOpen(data)" md-ink-ripple></button>
+									<button type="button" class="btn btn-info ion ion-plus" ng-click="modalCreateOpen()" md-ink-ripple></button>
 								</div>
 							</div>
 						</form>
@@ -43,22 +43,22 @@
 						<div class="row">
 							<div class="col-sm-4">
 								<label>Plan de préstamo</label>
-								<input type="text" class="form-control">
+								<select class="form-control" ng-model="detalle_cliente.planes_id" ng-options="item as item.descripcion for item in planes"></select>
 							</div>
 							<div class="col-sm-4">
 								<label>Monto</label>
-								<input type="text" class="form-control">
+								<select class="form-control" ng-model="detalle_cliente.monto_id" ng-options="item as item.monto for item in montosprestamo" ng-change="calcularInteresCuota(detalle_cliente.planes_id)"></select>
 							</div>
 							<div class="col-sm-4">
 								<label>Interés</label>
-								<input type="text" class="form-control" ng-model="detalle_cliente.interes" disabled>
+								<input type="text" class="form-control" ng-model="detalle_cliente.interes | number : 2" disabled>
 							</div>
 						</div>
 						<br>
 						<div class="row">
 							<div class="col-sm-4">
 								<label>Cuota diaria</label>
-								<input type="text" class="form-control" ng-model="detalle_cliente.cuota_diaria" disabled>
+								<input type="text" class="form-control" ng-model="detalle_cliente.cuota_diaria | number : 2" disabled>
 							</div>
 							<div class="col-sm-4">
 								<label>Fecha inicio</label>
@@ -73,7 +73,13 @@
 						<div class="row">
 							<div class="col-sm-4">
 								<label>Cobrador</label>
-								<input type="text" class="form-control">
+								<select class="form-control" ng-model="detalle_cliente.usuarios_cobrador" ng-options="item as item.nombre for item in usuarios_cobrador"></select>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-md-12 col-md-offset-5">
+								<button align="center" type="button" class="btn btn-success btn-rounded" ng-click="saveData(detalle_cliente)" md-ink-ripple>Guardar nuevo crédito</button>
 							</div>
 						</div>
 					</div>

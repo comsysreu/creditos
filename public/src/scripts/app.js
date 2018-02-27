@@ -168,6 +168,32 @@
 				}]
 			}
 		});
+
+        $routeProvider.when("/abonos", {
+            templateUrl: "views/abonos/abonos.html",
+            controller: "AbonosController",
+            resolve: {
+                deps: ["$ocLazyLoad", function(a) {
+                    return a.load({
+                        name: "app.abonos",
+                        files: ["scripts/controllers/AbonosController.js"]
+                    })
+                }]
+            }
+        });
+        
+        $routeProvider.when("/abonos/:id", {
+            templateUrl: "views/abonos/abonos.html",
+            controller: "AbonosController",
+            resolve: {
+                deps: ["$ocLazyLoad", function(a) {
+                    return a.load({
+                        name: "app.abonos",
+                        files: ["scripts/controllers/AbonosController.js"]
+                    })
+                }]
+            }
+        });
 		
 		$routeProvider.when("/usuarios", {
 			templateUrl: "views/usuarios/usuarios.html",
@@ -229,6 +255,19 @@
 					return a.load({
 						name: "app.montos",
 						files: ["scripts/controllers/MontosController.js"]
+					})
+				}]
+			}
+		});
+
+		$routeProvider.when("/detallecliente/:id", {
+			templateUrl: "views/clientes/detallecliente.html",
+			controller: "DetalleClienteController",
+			resolve: {
+				deps: ["$ocLazyLoad", function(a) {
+					return a.load({
+						name: "app.detallecliente",
+						files: ["scripts/controllers/DetalleClienteController.js"]
 					})
 				}]
 			}

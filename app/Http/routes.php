@@ -15,6 +15,10 @@ Route::get('/', function () {
     return redirect('src');
 });
 
+Route::get('/boletaview', function(){
+	return view('pdf.boleta');
+});
+
 Route::group(['prefix' => 'ws'], function() {
 	Route::resource('tipousuarios', 		'TipoUsuariosController');
 	Route::resource('sucursales', 			'SucursalesController');
@@ -36,6 +40,8 @@ Route::group(['prefix' => 'ws'], function() {
 	Route::get('listacobradores',			'UsuariosController@listacobradores');
 	Route::post('registrarabonos',			'CreditosController@registrarAbono');
 	Route::get('buscarcliente',				'ClientesController@buscarCliente');
+	Route::get('detallecliente',			'ClientesController@detalleCreditoCliente');
+	Route::get('boletapdf',					'CreditosController@boletaPDF');
 });
 
 Route::group(['prefix' => 'ws/movil'], function()
